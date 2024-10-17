@@ -1,8 +1,10 @@
 package com.example.demo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.time.LocalDate;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -24,8 +26,20 @@ public class AppController {
         List<Performance> listPerformance = service.listAll(keyword);
         model.addAttribute("listPerformance", listPerformance);
         model.addAttribute("keyword", keyword);
+
+        // Получаем количество спектаклей по дням и преобразуем в список
+        Map<LocalDate, Long> performancesByDayMap = service.getPerformancesCountByDay();
+        List<Map.Entry<LocalDate, Long>> performancesByDayList = new ArrayList<>(performancesByDayMap.entrySet());
+
+        // Если у вас был код для сортировки и переворота списка, он теперь не нужен
+        // Список уже отсортирован в правильном порядке в методе getPerformancesCountByDay
+
+        model.addAttribute("performancesByDayList", performancesByDayList);
+
         return "index"; // Главная страница
     }
+
+
 
     @RequestMapping("/new")
     public String showNewPerformanceForm(Model model) {
